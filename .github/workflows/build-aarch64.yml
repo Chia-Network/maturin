@@ -48,7 +48,7 @@ jobs:
             if [ ! -f "activate" ]; then ln -s venv/bin/activate; fi && \
             . ./activate && \
             pip wheel . --wheel-dir=/tmp/wheels/ && \
-            auditwheel repair /tmp/wheels/* --wheel-dir target/wheels/ \
+            auditwheel repair /tmp/wheels/maturin*.whl --wheel-dir target/wheels/ \
           '
 
     - name: Upload artifacts
