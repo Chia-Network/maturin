@@ -13,11 +13,11 @@ on:
 
 jobs:
   build_wheels:
-    name: ARM64 Python Wheels on ARM64 Runner
+    name: ARM64 Python Wheels on ubuntu-latest
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pyver: [cp36-cp36m, cp37-cp37m, cp38-cp38, cp39-cp39]
+        pyver: [cp37-cp37m, cp38-cp38, cp39-cp39]
         arch: [aarch64]
 
     steps:
@@ -39,8 +39,6 @@ jobs:
           quay.io/pypa/manylinux2014_${{ matrix.arch }} \
           bash -exc '\
             echo $PATH && \
-            python --version && \
-            python3 --version && \
             curl -L https://sh.rustup.rs > rustup.rs && \
             chmod +x rustup.rs && \
             ./rustup.rs -y && \
@@ -98,8 +96,3 @@ jobs:
       run: |
         . ./activate
         twine upload --non-interactive --skip-existing --verbose 'target/wheels/*'
-
-    - name: Clean up
-      run: |
-        rm -rf venv
-        rm -rf target
