@@ -30,7 +30,7 @@ jobs:
       id: qemu
       uses: docker/setup-qemu-action@v1
       with:
-        platform: arm64
+        platforms: arm64
 
     - name: Build Python wheels - ${{ matrix.pyver }}
       run: |
@@ -38,6 +38,9 @@ jobs:
           -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
           quay.io/pypa/manylinux2014_${{ matrix.arch }} \
           bash -exc '\
+            echo $PATH && \
+            python --version && \
+            python3 --version && \
             curl -L https://sh.rustup.rs > rustup.rs && \
             chmod +x rustup.rs && \
             ./rustup.rs -y && \
@@ -46,7 +49,8 @@ jobs:
             /opt/python/${{ matrix.pyver }}/bin/python -m venv venv && \
             if [ ! -f "activate" ]; then ln -s venv/bin/activate; fi && \
             . ./activate && \
-            pip wheel . --wheel-dir=target/wheels/ \
+            pip wheel . --wheel-dir=/tmp/wheels/ && \
+            auditwheel repair /tmp/wheels/* --wheel-dir target/wheels/ \
           '
 
     - name: Upload artifacts
